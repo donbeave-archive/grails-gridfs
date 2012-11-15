@@ -1,71 +1,53 @@
-class GridfsGrailsPlugin {
-    // the plugin version
-    def version = "0.1"
-    // the version or versions of Grails the plugin is designed for
-    def grailsVersion = "2.1 > *"
-    // the other plugins this plugin depends on
-    def dependsOn = [:]
-    // resources that are excluded from plugin packaging
-    def pluginExcludes = [
-        "grails-app/views/error.gsp"
-    ]
+import com.mongodb.BasicDBObject
+import com.mongodb.DBCursor
+import com.mongodb.DBObject
+import org.grails.datastore.mapping.model.MappingContext
+import org.grails.datastore.mapping.mongo.MongoDatastore
 
-    // TODO Fill in these fields
-    def title = "Gridfs Plugin" // Headline display name of the plugin
-    def author = "Your name"
-    def authorEmail = ""
-    def description = '''\
-Brief summary/description of the plugin.
+class GridfsGrailsPlugin {
+  def version = "0.1"
+  def grailsVersion = "1.3.7 > *"
+  def observe = ['services', 'domainClass']
+  def loadAfter = ['mongodb']
+
+  def dependsOn = [:]
+  def pluginExcludes = [
+      "grails-app/views/error.gsp"
+  ]
+
+  // TODO Fill in these fields
+  def title = "GridFS Plugin"
+  def author = "BeaVe"
+  def authorEmail = "donbeave@gmail.com"
+  def description = '''\
+GridFS plugin for MongoDB.
 '''
 
-    // URL to the plugin's documentation
-    def documentation = "http://grails.org/plugin/gridfs"
+  def documentation = "http://grails.org/plugin/gridfs"
 
-    // Extra (optional) plugin metadata
+  def doWithDynamicMethods = { ctx ->
+    MongoDatastore datastore = ctx.mongoDatastore
+    MappingContext mongoMappingContext = ctx.getBean('mongoMappingContext')
 
-    // License: one of 'APACHE', 'GPL2', 'GPL3'
-//    def license = "APACHE"
+    mongoMappingContext.persistentEntities.each {
+      def collectionName = datastore.getCollectionName(it)
 
-    // Details of company behind the plugin (if there is one)
-//    def organization = [ name: "My Company", url: "http://www.my-company.com/" ]
-
-    // Any additional developers beyond the author specified above.
-//    def developers = [ [ name: "Joe Bloggs", email: "joe@bloggs.net" ]]
-
-    // Location of the plugin's issue tracker.
-//    def issueManagement = [ system: "JIRA", url: "http://jira.grails.org/browse/GPMYPLUGIN" ]
-
-    // Online location of the plugin's browseable source code.
-//    def scm = [ url: "http://svn.codehaus.org/grails-plugins/" ]
-
-    def doWithWebDescriptor = { xml ->
-        // TODO Implement additions to web.xml (optional), this event occurs before
+      if (collectionName.endsWith('.files')) {
+        // TODO GridFS domain
+        log.debug "Set GridFS to ${it.javaClass}."
+      }
     }
 
-    def doWithSpring = {
-        // TODO Implement runtime spring config (optional)
+    final oldAsType = DBObject.metaClass.getMetaMethod('asType', [Class] as Class[])
+
+    def asTypeHook = { Class cls ->
+      // TODO use custom convertor
+      oldAsType.invoke(delegate, cls)
     }
 
-    def doWithDynamicMethods = { ctx ->
-        // TODO Implement registering dynamic methods to classes (optional)
-    }
+    DBObject.metaClass.asType = asTypeHook
+    BasicDBObject.metaClass.asType = asTypeHook
+    DBCursor.metaClass.asType = asTypeHook
+  }
 
-    def doWithApplicationContext = { applicationContext ->
-        // TODO Implement post initialization spring config (optional)
-    }
-
-    def onChange = { event ->
-        // TODO Implement code that is executed when any artefact that this plugin is
-        // watching is modified and reloaded. The event contains: event.source,
-        // event.application, event.manager, event.ctx, and event.plugin.
-    }
-
-    def onConfigChange = { event ->
-        // TODO Implement code that is executed when the project configuration changes.
-        // The event is the same as for 'onChange'.
-    }
-
-    def onShutdown = { event ->
-        // TODO Implement code that is executed when the application shuts down (optional)
-    }
 }

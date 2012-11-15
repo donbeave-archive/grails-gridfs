@@ -20,4 +20,8 @@ grails.project.dependency.resolution = {
 
   }
 
+  plugins {
+    compile ':mongodb:1.0.0.GA'
+  }
+
 }
