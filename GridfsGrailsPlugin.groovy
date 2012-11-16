@@ -1,3 +1,5 @@
+import grails.plugin.cache.ehcache.GrailsEhCacheManagerFactoryBean
+
 import com.mongodb.DBRef
 import com.mongodb.gridfs.GridFS
 import org.apache.commons.io.IOUtils
@@ -31,6 +33,18 @@ GridFS plugin for MongoDB.
 
   private List gridfsClasses = []
   private Map gridfsCollections = [:]
+
+  def doWithSpring = {
+    def mongoConfig = application.config?.grails?.mongo.clone()
+
+    log.debug "Overriding MongoDB Datastore bean."
+
+    mongoDatastore(GridfsDatastoreFactoryBean) {
+      mongo = ref("mongoBean")
+      mappingContext = ref("mongoMappingContext")
+      config = mongoConfig.toProperties()
+    }
+  }
 
   def doWithDynamicMethods = { ctx ->
     MongoDatastore datastore = ctx.mongoDatastore
