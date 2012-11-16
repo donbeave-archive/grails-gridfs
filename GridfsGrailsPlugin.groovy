@@ -1,5 +1,3 @@
-import grails.plugin.cache.ehcache.GrailsEhCacheManagerFactoryBean
-
 import com.mongodb.DBRef
 import com.mongodb.gridfs.GridFS
 import org.apache.commons.io.IOUtils
@@ -102,6 +100,9 @@ GridFS plugin for MongoDB.
         }
       }
 
+      // setting id to file (if neeed)
+      id ? file.setId(id) : null
+
       if (needRemove) {
         log.debug "removing existing object from DB."
         gridfs.remove(id)
@@ -109,7 +110,7 @@ GridFS plugin for MongoDB.
 
       file.save()
 
-      delegate.id = file.get('_id')
+      delegate.id = file.id
       delegate.uploadDate = file.uploadDate
 
       // firing events (if need)
