@@ -144,7 +144,7 @@ GridFS plugin for MongoDB.
     mongoMappingContext.persistentEntities.each {
       def collectionName = datastore.getCollectionName(it)
 
-      if (collectionName.endsWith('.files')) {
+      if (collectionName != null && collectionName.endsWith('.files')) {
         log.debug "Setting GridFS to ${it.javaClass}."
 
         MongoTemplate template = datastore.getMongoTemplate(it)
