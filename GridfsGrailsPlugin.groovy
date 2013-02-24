@@ -9,7 +9,7 @@ import org.grails.datastore.mapping.mongo.MongoDatastore
 import org.springframework.data.mongodb.core.MongoTemplate
 
 class GridfsGrailsPlugin {
-  def version = "0.1"
+  def version = "0.1.1"
   def grailsVersion = "1.3.7 > *"
   def observe = ['services', 'domainClass']
   def loadAfter = ['mongodb']
