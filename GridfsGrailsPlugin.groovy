@@ -12,7 +12,7 @@ class GridfsGrailsPlugin {
   def version = '0.1.2'
   def grailsVersion = "1.3.7 > *"
   def observe = ['services', 'domainClass']
-  def loadAfter = ['mongodb']
+  def loadAfter = ['mongodb-compound-index-attributes']
 
   def dependsOn = [:]
   def pluginExcludes = [
