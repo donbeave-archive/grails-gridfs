@@ -9,25 +9,25 @@ import org.grails.datastore.mapping.mongo.MongoDatastore
 import org.springframework.data.mongodb.core.MongoTemplate
 
 class GridfsGrailsPlugin {
-  def version = "0.1.1"
+  def version = '0.1.2'
   def grailsVersion = "1.3.7 > *"
   def observe = ['services', 'domainClass']
   def loadAfter = ['mongodb']
 
   def dependsOn = [:]
   def pluginExcludes = [
-      "grails-app/views/error.gsp"
+      'grails-app/views/error.gsp'
   ]
 
   // TODO Fill in these fields
-  def title = "GridFS Plugin"
-  def author = "BeaVe"
-  def authorEmail = "donbeave@gmail.com"
+  def title = 'GridFS Plugin'
+  def author = 'BeaVe'
+  def authorEmail = 'donbeave@gmail.com'
   def description = '''\
 GridFS plugin for MongoDB.
 '''
 
-  def documentation = "http://grails.org/plugin/gridfs"
+  def documentation = 'http://grails.org/plugin/gridfs'
 
   private List gridfsClasses = []
   private Map gridfsCollections = [:]
@@ -35,11 +35,11 @@ GridFS plugin for MongoDB.
   def doWithSpring = {
     def mongoConfig = application.config?.grails?.mongo.clone()
 
-    log.debug "Overriding MongoDB Datastore bean."
+    log.debug 'Overriding MongoDB Datastore bean.'
 
     mongoDatastore(GridfsDatastoreFactoryBean) {
-      mongo = ref("mongoBean")
-      mappingContext = ref("mongoMappingContext")
+      mongo = ref('mongoBean')
+      mappingContext = ref('mongoMappingContext')
       config = mongoConfig.toProperties()
     }
   }

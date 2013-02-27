@@ -1,14 +1,14 @@
-grails.project.class.dir = "target/classes"
-grails.project.test.class.dir = "target/test-classes"
-grails.project.test.reports.dir = "target/test-reports"
+grails.project.class.dir = 'target/classes'
+grails.project.test.class.dir = 'target/test-classes'
+grails.project.test.reports.dir = 'target/test-reports'
 
 grails.project.dependency.resolution = {
 
-  inherits("global") {
+  inherits('global') {
     excludes 'xml-apis', 'netty'
   }
 
-  log "warn"
+  log 'warn'
 
   repositories {
     grailsCentral()
@@ -21,7 +21,12 @@ grails.project.dependency.resolution = {
   }
 
   plugins {
-    compile ':mongodb:1.0.0.GA'
+    compile(':mongodb:1.0.0.GA') {
+      export = false
+    }
+    compile(':mongodb-compound-index-attributes:1.1') {
+      export = false
+    }
   }
 
 }
