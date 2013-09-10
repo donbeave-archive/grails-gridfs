@@ -31,7 +31,7 @@ grails.project.dependency.resolution = {
         ':rest-client-builder:1.0.3') {
       export = false
     }
-    compile(':mongodb:1.0.0.GA') {
+    compile(':mongodb:1.3.0') {
       export = false
     }
   }
