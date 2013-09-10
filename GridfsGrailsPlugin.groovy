@@ -9,12 +9,12 @@ import org.grails.datastore.mapping.mongo.MongoDatastore
 import org.springframework.data.mongodb.core.MongoTemplate
 
 class GridfsGrailsPlugin {
-  def version = '0.1.2'
+  def version = '0.2-SNAPSHOT'
   def grailsVersion = "1.3.7 > *"
   def observe = ['services', 'domainClass']
-  def loadAfter = ['mongodb-compound-index-attributes']
+  def loadAfter = ['mongodb']
 
-  def dependsOn = [:]
+  def dependsOn = [mongodb: '1.3.0 > *']
   def pluginExcludes = [
       'grails-app/views/error.gsp'
   ]
@@ -45,6 +45,52 @@ GridFS plugin for MongoDB.
   }
 
   def doWithDynamicMethods = { ctx ->
+    // from MongoFile Plugin
+    for (domainClass in application.domainClasses) {
+      domainClass.metaClass.mongoFileExists = { String fieldName = '' ->
+        getMongoFile(fieldName) != null
+      }
+
+      domainClass.metaClass.getMongoFile = { String fieldName = '' ->
+        def mongoFileService = ctx.getBean("mongoFileService")
+        if (mongoFileService) {
+          return mongoFileService.getFile(delegate.getClass(), id, fieldName)
+        }
+
+        null
+      }
+
+      domainClass.metaClass.saveMongoFile = { org.springframework.web.multipart.MultipartFile file, String fieldName = '' ->
+        def mongoFileService = ctx.getBean("mongoFileService")
+        if (mongoFileService) {
+          mongoFileService.saveFile(file, delegate.getClass(), id, fieldName)
+        }
+      }
+
+      domainClass.metaClass.saveMongoFile = { byte[] fileContents, String fileName, String fieldName = '' ->
+        def mongoFileService = ctx.getBean("mongoFileService")
+        if (mongoFileService) {
+          mongoFileService.saveFile(fileContents, fileName, delegate.getClass(), id, fieldName)
+        }
+      }
+
+      domainClass.metaClass.saveMongoFile = { InputStream inputStream, String fileName, String fieldName = '' ->
+        def mongoFileService = ctx.getBean("mongoFileService")
+        if (mongoFileService) {
+          mongoFileService.saveFile(inputStream, fileName, delegate.getClass(), id, fieldName)
+        }
+      }
+
+      domainClass.metaClass.deleteMongoFile = { String fieldName = '' ->
+        def mongoFileService = ctx.getBean("mongoFileService")
+        if (mongoFileService) {
+          mongoFileService.deleteFile(delegate.getClass(), id, fieldName)
+        }
+      }
+    }
+
+
+
     MongoDatastore datastore = ctx.mongoDatastore
     MappingContext mongoMappingContext = ctx.getBean('mongoMappingContext')
 

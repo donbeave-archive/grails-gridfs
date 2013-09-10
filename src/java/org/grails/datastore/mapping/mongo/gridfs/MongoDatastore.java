@@ -7,7 +7,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 
 import java.util.Map;
 
-public class MongoDatastore extends com.monochromeroad.grails.plugins.mongo.cia.MongoDatastore {
+public class MongoDatastore extends org.grails.datastore.mapping.mongo.MongoDatastore {
 
   public MongoDatastore(MongoMappingContext mappingContext, Mongo mongo,
                         Map<String, String> connectionDetails, ConfigurableApplicationContext ctx) {
