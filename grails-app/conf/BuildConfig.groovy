@@ -9,7 +9,7 @@ grails.project.fork = [
     console: [maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256]
 ]
 
-grails.project.dependency.resolver = 'maven'
+//grails.project.dependency.resolver = 'maven'
 grails.project.dependency.resolution = {
   inherits('global') {
 
@@ -21,7 +21,7 @@ grails.project.dependency.resolution = {
     mavenCentral()
   }
   dependencies {
-    compile('eu.medsea.mimeutil:mime-util:2.1.3') {
+    runtime('eu.medsea.mimeutil:mime-util:2.1.3') {
       excludes([group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.5.6'])
     }
   }
