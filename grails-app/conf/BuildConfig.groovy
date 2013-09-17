@@ -14,8 +14,8 @@ grails.project.dependency.resolution = {
     mavenCentral()
   }
   dependencies {
-    runtime('eu.medsea.mimeutil:mime-util:2.1.3') {
-      excludes([group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.5.6'])
+    compile 'org.apache.tika:tika-core:1.4', {
+      excludes 'xercesImpl', 'xmlParserAPIs', 'xml-apis', 'groovy'
     }
   }
 

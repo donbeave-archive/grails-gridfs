@@ -1,15 +1,15 @@
 package com.quirklabs.mongofile
 
-import com.mongodb.BasicDBObject
-import com.mongodb.DB
-import com.mongodb.DBObject
-import com.mongodb.WriteConcern
+import com.mongodb.*
 import com.mongodb.gridfs.GridFS
 import com.mongodb.gridfs.GridFSDBFile
 import com.mongodb.gridfs.GridFSFile
 import com.mongodb.gridfs.GridFSInputFile
-import eu.medsea.mimeutil.detector.MagicMimeMimeDetector
 import org.apache.commons.io.IOUtils
+import org.apache.tika.config.TikaConfig
+import org.apache.tika.metadata.Metadata
+import org.apache.tika.mime.MediaType
+import org.apache.tika.mime.MimeType
 import org.bson.types.ObjectId
 import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.springframework.web.multipart.MultipartFile
@@ -83,7 +83,7 @@ class MongoFileService {
    * @return GridFSFile new file
    */
   public GridFSFile saveFileMultipart(String bucket, MultipartFile file, String filename = null, Map metaData = null) {
-    GridFS gfs = getGridfs(bucket)
+    GridFS gfs = getGridfs(bucket, metaData?.id != null)
 
     // get content type
     byte[] b = new byte[4096]
@@ -118,7 +118,7 @@ class MongoFileService {
    * @return GridFSFile new file
    */
   public GridFSFile saveFileFile(String bucket, File file, String filename, Map metaData = null) {
-    GridFS gfs = getGridfs(bucket)
+    GridFS gfs = getGridfs(bucket, metaData?.id != null)
 
     GridFSInputFile gInputFile = gfs.createFile(file.newInputStream())
     gInputFile.setFilename(filename)
@@ -142,7 +142,7 @@ class MongoFileService {
    * @return GridFSFile new file
    */
   public GridFSFile saveFileBytes(String bucket, byte[] fileContents, String filename, Map metaData = null) {
-    GridFS gfs = getGridfs(bucket)
+    GridFS gfs = getGridfs(bucket, metaData?.id != null)
 
     GridFSInputFile gInputFile = gfs.createFile(new ByteArrayInputStream(fileContents))
     gInputFile.setFilename(filename)
@@ -166,11 +166,11 @@ class MongoFileService {
    * @return GridFSFile new file
    */
   public GridFSFile saveFileStream(String bucket, InputStream inputStream, String filename, Map metaData = null) {
-    GridFS gfs = getGridfs(bucket)
+    GridFS gfs = getGridfs(bucket, metaData?.id != null)
 
     GridFSInputFile gInputFile = gfs.createFile(inputStream)
     gInputFile.setFilename(filename)
-    gInputFile.setContentType(getMimeType(fileContents))
+    gInputFile.setContentType(getMimeType(inputStream.bytes))
     if (metaData) {
       DBObject mD = new BasicDBObject()
       metaData.each { mD.put(it.key.toString(), it.value) }
@@ -191,7 +191,7 @@ class MongoFileService {
   }
 
   def GridFSDBFile getFile(String bucket, String id, boolean asObjectId = true) {
-    GridFS gfs = getGridfs(bucket)
+    GridFS gfs = getGridfs(bucket, false)
 
     if (asObjectId) {
       return gfs.findOne(new ObjectId(id))
@@ -211,7 +211,7 @@ class MongoFileService {
   }
 
   def GridFSDBFile findFile(String bucket, Map query) {
-    GridFS gfs = getGridfs(bucket)
+    GridFS gfs = getGridfs(bucket, false)
 
     return gfs.findOne(new BasicDBObject(query))
   }
@@ -223,7 +223,7 @@ class MongoFileService {
   }
 
   def deleteFile(String bucket, Map query) {
-    GridFS gfs = getGridfs(bucket)
+    GridFS gfs = getGridfs(bucket, false)
 
     gfs.remove(query as BasicDBObject)
   }
@@ -248,7 +248,7 @@ class MongoFileService {
     db.dropDatabase()
   }
 
-  private GridFS getGridfs(String bucket) {
+  private GridFS getGridfs(String bucket, boolean metadata = true) {
     def gridfs = _gridfs[bucket]
     if (!gridfs) {
       def dbname = ApplicationHolder.application.config.mongodb?.database
@@ -260,7 +260,11 @@ class MongoFileService {
       _gridfs[bucket] = gridfs
 
       // set indices
-      db.getCollection(bucket + ".files").ensureIndex(new BasicDBObject("metadata.id", 1), new BasicDBObject('unique', true).append('dropDups', true))
+      DBCollection collection = db.getCollection(bucket + ".files")
+
+      if (metadata) {
+        collection.ensureIndex(new BasicDBObject("metadata.id", 1), new BasicDBObject('unique', true).append('dropDups', true))
+      }
     }
 
     gridfs
@@ -280,19 +284,16 @@ class MongoFileService {
   }
 
   public String getMimeType(File file) {
-    // use mime magic
-    MagicMimeMimeDetector detector = new MagicMimeMimeDetector()
-    Collection mimeTypes = detector.getMimeTypesFile(file)
-    if (mimeTypes) return mimeTypes[0].toString()
-
-    return "application/octet-stream"
+    return getMimeType(file.bytes)
   }
 
   public String getMimeType(byte[] ba) {
     // use mime magic
-    MagicMimeMimeDetector detector = new MagicMimeMimeDetector()
-    Collection mimeTypes = detector.getMimeTypesByteArray(ba)
-    if (mimeTypes) return mimeTypes.iterator().getAt(0).toString()
+    MimeType mimeType = detectMimeType(ba)
+
+    if (mimeType) {
+      return mimeType.name
+    }
 
     return "application/octet-stream"
   }
@@ -385,6 +386,20 @@ class MongoFileService {
       } catch (IOException ignored) {
       }
     }
+  }
+
+  String detectExtension(byte[] bytes) {
+    MimeType mimeType = detectMimeType(bytes)
+
+    return mimeType.getExtension();
+  }
+
+  public MimeType detectMimeType(byte[] bytes) {
+    TikaConfig config = TikaConfig.getDefaultConfig()
+
+    InputStream stream = new ByteArrayInputStream(bytes);
+    MediaType mediaType = config.getMimeRepository().detect(stream, new Metadata())
+    config.getMimeRepository().forName(mediaType.toString())
   }
 
 }
