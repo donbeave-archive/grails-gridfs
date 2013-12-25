@@ -8,9 +8,12 @@ import org.grails.datastore.mapping.model.types.Association
 import org.grails.datastore.mapping.mongo.MongoDatastore
 import org.springframework.data.mongodb.core.MongoTemplate
 
+/**
+ * @author <a href='mailto:donbeave@gmail.com'>Alexey Zhokhov</a>
+ */
 class GridfsGrailsPlugin {
   def version = '0.2-SNAPSHOT'
-  def grailsVersion = "2.3.0 > *"
+  def grailsVersion = '2.1.4 > *'
   def observe = ['services', 'domainClass']
   def loadAfter = ['mongodb']
 
@@ -19,15 +22,20 @@ class GridfsGrailsPlugin {
       'grails-app/views/error.gsp'
   ]
 
-  // TODO Fill in these fields
   def title = 'GridFS Plugin'
-  def author = 'BeaVe'
+  def author = 'Alexey Zhokhov'
   def authorEmail = 'donbeave@gmail.com'
   def description = '''\
 GridFS plugin for MongoDB.
 '''
 
   def documentation = 'http://grails.org/plugin/gridfs'
+
+  def license = 'APACHE'
+
+  def developers = [[name: 'Alexey Zhokhov', email: 'donbeave@gmail.com']]
+
+  def scm = [url: 'https://github.com/donbeave/grails-gridfs']
 
   private List gridfsClasses = []
   private Map gridfsCollections = [:]
@@ -203,6 +211,9 @@ GridFS plugin for MongoDB.
 
         it.javaClass.metaClass.save = saveHook
         it.javaClass.metaClass.getBytes = getBytesHook
+        it.javaClass.metaClass.static.getGridfs = {
+          return gridfs
+        }
       }
     }
   }
