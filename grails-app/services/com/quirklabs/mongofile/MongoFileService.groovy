@@ -32,7 +32,7 @@ class MongoFileService {
    * @param fieldName optional field name
    * @return GridFSFile new file
    */
-  public GridFSFile saveFile(MultipartFile file, Class domainClass, Long id, String fieldName = '') {
+  public GridFSFile saveFile(MultipartFile file, Class domainClass, Serializable id, String fieldName = '') {
     String bucket = getBucket(domainClass, fieldName)
 
     deleteFile(domainClass, id, fieldName)
@@ -49,7 +49,7 @@ class MongoFileService {
    * @param fieldName optional field name
    * @return GridFSFile new file
    */
-  public GridFSFile saveFile(byte[] fileContents, String fileName, Class domainClass, Long id, String fieldName = '') {
+  public GridFSFile saveFile(byte[] fileContents, String fileName, Class domainClass, Serializable id, String fieldName = '') {
     String bucket = getBucket(domainClass, fieldName)
 
     deleteFile(domainClass, id, fieldName)
@@ -66,7 +66,7 @@ class MongoFileService {
    * @param fieldName optional field name
    * @return GridFSFile new file
    */
-  public GridFSFile saveFile(InputStream inputStream, String fileName, Class domainClass, Long id, String fieldName = '') {
+  public GridFSFile saveFile(InputStream inputStream, String fileName, Class domainClass, Serializable id, String fieldName = '') {
     String bucket = getBucket(domainClass, fieldName)
 
     deleteFile(domainClass, id, fieldName)
@@ -200,13 +200,13 @@ class MongoFileService {
     }
   }
 
-  def GridFSDBFile getFile(Class domainClass, Long id, String fieldName = '') {
+  def GridFSDBFile getFile(Class domainClass, Serializable id, String fieldName = '') {
     String bucket = getBucket(domainClass, fieldName)
 
     return findFile(bucket, ['metadata.id': id])
   }
 
-  def GridFSDBFile getFile(String bucket, Long id) {
+  def GridFSDBFile getFile(String bucket, Serializable id) {
     return findFile(bucket, ['metadata.id': id])
   }
 
@@ -216,7 +216,7 @@ class MongoFileService {
     return gfs.findOne(new BasicDBObject(query))
   }
 
-  def deleteFile(Class domainClass, Long id, String fieldName = '') {
+  def deleteFile(Class domainClass, Serializable id, String fieldName = '') {
     String bucket = getBucket(domainClass, fieldName)
 
     deleteFile(bucket, ['metadata.id': id])
@@ -298,7 +298,7 @@ class MongoFileService {
     return "application/octet-stream"
   }
 
-  public void deliverFile(HttpServletResponse response, boolean asAttachment, Class domainClass, Long id, String fieldName = '') {
+  public void deliverFile(HttpServletResponse response, boolean asAttachment, Class domainClass, Serializable id, String fieldName = '') {
     GridFSDBFile file = getFile(domainClass, id, fieldName)
     if (file == null) {
       throw new FileNotFoundException("Could not find ${domainClass.name} file for id ${id}")
