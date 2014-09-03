@@ -19,8 +19,8 @@ import org.grails.datastore.mapping.model.types.*;
 import org.grails.datastore.mapping.mongo.MongoSession;
 import org.grails.datastore.mapping.mongo.engine.MongoEntityPersister;
 import org.grails.datastore.mapping.proxy.ProxyFactory;
-import org.spockframework.util.Assert;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.util.Assert;
 
 import javax.persistence.CascadeType;
 import javax.persistence.EnumType;
