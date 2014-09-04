@@ -3,11 +3,14 @@ package grails.plugin.gridfs
 import com.mongodb.gridfs.GridFSDBFile
 import com.mongodb.gridfs.GridFSInputFile
 import org.apache.commons.fileupload.FileItem
+import org.apache.commons.io.IOUtils
 import org.apache.tika.config.TikaConfig
 import org.apache.tika.metadata.Metadata
 import org.apache.tika.mime.MediaType
 import org.apache.tika.mime.MimeType
 import org.springframework.web.multipart.MultipartFile
+
+import javax.servlet.http.HttpServletResponse
 
 /**
  * @author <a href='mailto:donbeave@gmail.com'>Alexey Zhokhov</a>
@@ -18,6 +21,9 @@ class GridfsService {
 
     List gridfsClasses = []
 
+    /**
+     * @param obj
+     */
     void save(obj) {
         if (obj.validate()) {
             if (!obj.metaClass.hasProperty(obj, fileObj)) {
@@ -55,6 +61,19 @@ class GridfsService {
         }
     }
 
+    /**
+     * @param obj
+     */
+    void delete(obj) {
+        if (obj.id) {
+            obj.gridfs.remove(obj.id)
+        }
+    }
+
+    /**
+     * @param obj
+     * @param file
+     */
     void setFile(obj, file) {
         if (file instanceof MultipartFile || file instanceof FileItem || file instanceof File) {
             setFileObj(obj, file)
@@ -73,6 +92,10 @@ class GridfsService {
         }
     }
 
+    /**
+     * @param obj
+     * @param bytes
+     */
     void setBytes(obj, byte[] bytes) {
         setFileObj(obj, new ByteArrayInputStream(bytes))
         try {
@@ -87,18 +110,65 @@ class GridfsService {
         }
     }
 
+    /**
+     * @param obj
+     * @param inputStream
+     */
     void setInputStream(obj, InputStream inputStream) {
         byte[] bytes = inputStream.bytes
 
         setBytes(obj, bytes)
     }
 
+    /**
+     * @param obj
+     */
     GridFSDBFile getDbFile(obj) {
         if (obj.id) {
             return obj.gridfs.find(obj.id)
         }
     }
 
+    /**
+     * Sends the file to the client.
+     * If no filename is given, the one from the gridfsfile is used.
+     *
+     * @param response
+     * @param file
+     * @param filename
+     * @param asAttachment
+     */
+    void deliverFile(HttpServletResponse response, file, String filename = null, boolean asAttachment = true) {
+        if (file == null || (file && !gridfsClasses.contains(file.class))) {
+            try {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND)
+            } catch (e) {
+            }
+            return
+        }
+
+        def dbFile = file.dbFile
+
+        if (filename == null) filename = dbFile.filename
+
+        response.contentType = dbFile.contentType
+        response.contentLength = dbFile.length.toInteger()
+        if (asAttachment)
+            setAttachmentHeader(response, filename)
+
+        try {
+            IOUtils.copy dbFile.inputStream, response.outputStream
+        } catch (e) {
+            try {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND)
+            } catch (IOException ignored) {
+            }
+        }
+    }
+
+    /**
+     * @param bytes
+     */
     static MimeType detectMimeType(byte[] bytes) {
         TikaConfig config = TikaConfig.getDefaultConfig()
 
@@ -114,6 +184,10 @@ class GridfsService {
         } else {
             obj.metaClass."${fileObj}" = file
         }
+    }
+
+    private static void setAttachmentHeader(HttpServletResponse response, String filename = null) {
+        response.setHeader('Content-Disposition', "attachment; filename=\"" + filename + "\"")
     }
 
 }

@@ -75,6 +75,9 @@ GridFS plugin for MongoDB.
                 it.javaClass.metaClass.save = {
                     service.save(delegate)
                 }
+                it.javaClass.metaClass.delete = {
+                    service.delete(delegate)
+                }
                 it.javaClass.metaClass.getDbFile = {
                     return service.getDbFile(delegate)
                 }
