@@ -15,7 +15,8 @@
  */
 package grails.plugin.gridfs
 
-import com.mongodb.gridfs.GridFSDBFile
+import grails.converters.JSON
+import grails.converters.XML
 import org.springframework.util.Assert
 
 /**
@@ -26,8 +27,25 @@ class GridfsController {
     def gridfsService
 
     def exists(FileCommand fileCommand) {
-        GridFSDBFile file = getGridFSFile(fileCommand)
-        file != null
+        def result = [exist: false]
+        try {
+            def file = Class.forName(fileCommand.className).get(fileCommand.id)
+            def dbFile = file?.dbFile
+
+            result.exist = file != null
+
+            if (dbFile) {
+                result.filename = dbFile.filename
+                result.contentType = dbFile.contentType
+                result.length = dbFile.length
+            }
+        } catch (ClassNotFoundException ignore) {
+        }
+        if (params.format && params.format.toLowerCase().equals('xml')) {
+            render(result as XML)
+        } else {
+            render(result as JSON)
+        }
     }
 
     def deliver(FileCommand fileCommand) {
@@ -44,5 +62,5 @@ class GridfsController {
 class FileCommand {
     String id
     String className
-    boolean attachment
+    boolean attachment = true
 }
