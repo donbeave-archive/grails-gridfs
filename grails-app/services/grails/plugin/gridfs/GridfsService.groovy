@@ -47,10 +47,12 @@ class GridfsService {
 
             def data = obj.metaClass.getProperty(obj, fileObj)
 
-            byte[] bytes = data.class.isArray() ? data : null
+            byte[] bytes = null
             String filename = null
 
-            if (data instanceof MultipartFile) {
+            if (data instanceof ByteArrayInputStream) {
+                bytes = data.bytes
+            } else if (data instanceof MultipartFile) {
                 bytes = data.bytes
                 filename = data.originalFilename ?: data.name
             } else if (data instanceof File) {
