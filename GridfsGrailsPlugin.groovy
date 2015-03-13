@@ -88,7 +88,7 @@ GridFS plugin for MongoDB.
                     service.setInputStream(delegate, stream)
                 }
                 it.javaClass.metaClass.save = {
-                    service.save(delegate)
+                    return service.save(delegate)
                 }
                 it.javaClass.metaClass.delete = {
                     service.delete(delegate)

@@ -39,7 +39,7 @@ class GridfsService {
     /**
      * @param obj
      */
-    void save(obj) {
+    def save(obj) {
         if (obj.validate()) {
             if (!obj.metaClass.hasProperty(obj, fileObj)) {
                 throw new RuntimeException('Can not save object, file not initialized')
@@ -76,6 +76,7 @@ class GridfsService {
 
             obj.id = nativeEntry.id
         }
+        return obj
     }
 
     /**
