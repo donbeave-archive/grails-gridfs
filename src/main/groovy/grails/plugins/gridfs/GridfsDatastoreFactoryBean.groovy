@@ -15,6 +15,7 @@
  */
 package grails.plugins.gridfs
 
+import grails.core.GrailsApplication
 import groovy.transform.CompileStatic
 import org.grails.datastore.gorm.events.AutoTimestampEventListener
 import org.grails.datastore.gorm.events.DomainEventListener
@@ -30,6 +31,10 @@ class GridfsDatastoreFactoryBean extends MongoDatastoreFactoryBean {
 
     @Override
     MongoDatastore getObject() {
+        GrailsApplication grailsApplication = applicationContext.getBean(GrailsApplication)
+
+        config = (Map<String, String>) ((Map) grailsApplication.getConfig()?.get('grails'))?.get('mongodb')
+
         MongoDatastore datastore
 
         def configurableApplicationContext = (ConfigurableApplicationContext) applicationContext

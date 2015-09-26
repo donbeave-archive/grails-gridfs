@@ -18,6 +18,7 @@ package grails.plugins.gridfs
 import com.mongodb.gridfs.GridFS
 import grails.plugins.Plugin
 import groovy.util.logging.Commons
+import org.grails.datastore.mapping.mongo.MongoDatastore
 import org.springframework.data.mongodb.core.MongoTemplate
 
 /**
@@ -53,25 +54,24 @@ GridFS plugin for MongoDB.
 
     Closure doWithSpring() {
         { ->
-            def mongoConfig = grailsApplication.config?.grails?.mongo.clone()
-
             log.debug 'Overriding MongoDB Datastore bean.'
 
             mongoDatastore(GridfsDatastoreFactoryBean) {
-                mongo = ref('mongoBean')
-                mappingContext = ref('mongoMappingContext')
-                config = mongoConfig.toProperties()
+                mongo = ref('mongo')
+                mappingContext = ref('gormMongoMappingContext')
             }
         }
     }
 
     void doWithDynamicMethods() {
-        def datastore = ctx.mongoDatastore
-        def service = ctx.gridfsService
+        def ctx = applicationContext
+
+        def datastore = ctx.getBean(MongoDatastore)
+        def service = ctx.getBean(GridfsService)
 
         service.gridfsClasses.clear()
 
-        ctx.mongoMappingContext.persistentEntities.each {
+        ctx.getBean('gormMongoMappingContext').persistentEntities.each {
             def collectionName = datastore.getCollectionName(it)
 
             if (collectionName != null && collectionName.endsWith('.files')) {
@@ -112,9 +112,7 @@ GridFS plugin for MongoDB.
     }
 
     void onChange(Map<String, Object> event) {
-        if (event.ctx) {
-            doWithDynamicMethods(event.ctx)
-        }
+        doWithDynamicMethods()
     }
 
 }

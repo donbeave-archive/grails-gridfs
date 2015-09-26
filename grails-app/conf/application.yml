@@ -2,7 +2,7 @@
 grails:
     profile: web-plugin
     codegen:
-        defaultPackage: gridfs
+        defaultPackage: grails.plugins.gridfs
 info:
     app:
         name: '@info.app.name@'
