@@ -22,7 +22,7 @@ import org.grails.datastore.mapping.mongo.MongoDatastore
 import org.springframework.data.mongodb.core.MongoTemplate
 
 /**
- * @author <a href='mailto:donbeave@gmail.com'>Alexey Zhokhov</a>
+ * @author <a href='mailto:alexey@zhokhov.com'>Alexey Zhokhov</a>
  */
 @Commons
 class GridfsGrailsPlugin extends Plugin {
@@ -31,7 +31,7 @@ class GridfsGrailsPlugin extends Plugin {
 
     def title = 'GridFS'
     def author = 'Alexey Zhokhov'
-    def authorEmail = 'donbeave@gmail.com'
+    def authorEmail = 'alexey@zhokhov.com'
     def description = '''\
 GridFS plugin for MongoDB.
 '''
@@ -43,7 +43,7 @@ GridFS plugin for MongoDB.
     def organization = [name: 'AZ', url: 'http://www.zhokhov.com']
 
     def developers = [
-            [name: 'Alexey Zhokhov', email: 'donbeave@gmail.com']
+            [name: 'Alexey Zhokhov', email: 'alexey@zhokhov.com']
     ]
 
     def issueManagement = [system: 'github', url: 'https://github.com/donbeave/grails-gridfs/issues']

@@ -20,7 +20,7 @@ import grails.converters.XML
 import org.springframework.util.Assert
 
 /**
- * @author <a href='mailto:donbeave@gmail.com'>Alexey Zhokhov</a>
+ * @author <a href='mailto:alexey@zhokhov.com'>Alexey Zhokhov</a>
  */
 class GridfsController {
 

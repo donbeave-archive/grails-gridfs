@@ -28,7 +28,7 @@ import org.springframework.web.multipart.MultipartFile
 import javax.servlet.http.HttpServletResponse
 
 /**
- * @author <a href='mailto:donbeave@gmail.com'>Alexey Zhokhov</a>
+ * @author <a href='mailto:alexey@zhokhov.com'>Alexey Zhokhov</a>
  */
 class GridfsService {
 

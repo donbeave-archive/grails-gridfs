@@ -24,7 +24,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import java.util.Map;
 
 /**
- * @author <a href='mailto:donbeave@gmail.com'>Alexey Zhokhov</a>
+ * @author <a href='mailto:alexey@zhokhov.com'>Alexey Zhokhov</a>
  */
 public class MongoDatastore extends org.grails.datastore.mapping.mongo.MongoDatastore {
 
