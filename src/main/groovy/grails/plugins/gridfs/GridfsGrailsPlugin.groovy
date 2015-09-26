@@ -21,6 +21,8 @@ import groovy.util.logging.Commons
 import org.grails.datastore.mapping.mongo.MongoDatastore
 import org.springframework.data.mongodb.core.MongoTemplate
 
+import java.util.concurrent.CopyOnWriteArrayList
+
 /**
  * @author <a href='mailto:alexey@zhokhov.com'>Alexey Zhokhov</a>
  */
@@ -69,7 +71,7 @@ GridFS plugin for MongoDB.
         def datastore = ctx.getBean(MongoDatastore)
         def service = ctx.getBean(GridfsService)
 
-        service.gridfsClasses.clear()
+        def list = []
 
         ctx.getBean('gormMongoMappingContext').persistentEntities.each {
             def collectionName = datastore.getCollectionName(it)
@@ -109,6 +111,8 @@ GridFS plugin for MongoDB.
                 }
             }
         }
+
+        service.gridfsClasses = list as CopyOnWriteArrayList
     }
 
     void onChange(Map<String, Object> event) {
