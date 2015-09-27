@@ -83,7 +83,7 @@ GridFS plugin for MongoDB.
 
                 def bucket = collectionName.replace('.files', '')
 
-                service.gridfsClasses.add it.javaClass
+                list.add it.javaClass
 
                 it.javaClass.metaClass.static.getGridfs = {
                     return new GridFS(template.db, bucket)
