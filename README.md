@@ -1,5 +1,6 @@
-grails-gridfs
-=============
+# grails-gridfs
+
+[![Analytics](https://ga-beacon.appspot.com/UA-71075299-1/grails-gridfs/main-page)](https://github.com/igrigorik/ga-beacon)
 
 Grails GridFS plugin
 
