@@ -15,20 +15,15 @@
  */
 package grails.plugins.gridfs
 
-import grails.core.GrailsApplication
 import groovy.transform.CompileStatic
-import org.grails.datastore.gorm.events.AutoTimestampEventListener
-import org.grails.datastore.gorm.events.DomainEventListener
-import org.grails.datastore.gorm.mongo.bean.factory.MongoDatastoreFactoryBean
-import org.grails.datastore.mapping.mongo.gridfs.MongoDatastore
-import org.springframework.context.ConfigurableApplicationContext
 
 /**
  * @author <a href='mailto:alexey@zhokhov.com'>Alexey Zhokhov</a>
  */
 @CompileStatic
-class GridfsDatastoreFactoryBean extends MongoDatastoreFactoryBean {
+class GridfsDatastoreFactoryBean {
 
+    /*
     @Override
     MongoDatastore getObject() {
         GrailsApplication grailsApplication = applicationContext.getBean(GrailsApplication)
@@ -51,5 +46,6 @@ class GridfsDatastoreFactoryBean extends MongoDatastoreFactoryBean {
         datastore.afterPropertiesSet()
         datastore
     }
+    */
 
 }

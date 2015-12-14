@@ -15,19 +15,12 @@
  */
 package org.grails.datastore.mapping.mongo.gridfs;
 
-import com.mongodb.Mongo;
-import com.mongodb.MongoClientOptions;
-import org.grails.datastore.mapping.core.Session;
-import org.grails.datastore.mapping.mongo.config.MongoMappingContext;
-import org.springframework.context.ConfigurableApplicationContext;
-
-import java.util.Map;
-
 /**
  * @author <a href='mailto:alexey@zhokhov.com'>Alexey Zhokhov</a>
  */
-public class MongoDatastore extends org.grails.datastore.mapping.mongo.MongoDatastore {
+public class MongoDatastore {
 
+    /*
     public MongoDatastore() {
         super();
     }
@@ -68,5 +61,6 @@ public class MongoDatastore extends org.grails.datastore.mapping.mongo.MongoData
     protected Session createStatelessSession(Map<String, String> connectionDetails) {
         return new MongoSession(this, getMappingContext(), getApplicationEventPublisher(), true);
     }
+    */
 
 }

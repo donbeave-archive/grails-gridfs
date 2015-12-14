@@ -23,6 +23,7 @@ import org.apache.tika.config.TikaConfig
 import org.apache.tika.metadata.Metadata
 import org.apache.tika.mime.MediaType
 import org.apache.tika.mime.MimeType
+import org.grails.datastore.mapping.mongo.MongoDatastore
 import org.springframework.web.multipart.MultipartFile
 
 import javax.servlet.http.HttpServletResponse
@@ -32,9 +33,9 @@ import javax.servlet.http.HttpServletResponse
  */
 class GridfsService {
 
-    def mongoDatastore
+    MongoDatastore mongoDatastore
 
-    List gridfsClasses = []
+    List<Class> gridfsClasses = []
 
     /**
      * @param obj

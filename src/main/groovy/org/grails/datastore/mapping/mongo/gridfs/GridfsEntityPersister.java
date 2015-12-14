@@ -15,39 +15,12 @@
  */
 package org.grails.datastore.mapping.mongo.gridfs;
 
-import com.mongodb.DBObject;
-import com.mongodb.gridfs.GridFS;
-import com.mongodb.gridfs.GridFSInputFile;
-import org.grails.datastore.mapping.collection.*;
-import org.grails.datastore.mapping.config.Property;
-import org.grails.datastore.mapping.core.SessionImplementor;
-import org.grails.datastore.mapping.engine.EntityAccess;
-import org.grails.datastore.mapping.engine.EntityPersister;
-import org.grails.datastore.mapping.engine.NativeEntryEntityPersister;
-import org.grails.datastore.mapping.engine.internal.MappingUtils;
-import org.grails.datastore.mapping.engine.types.CustomTypeMarshaller;
-import org.grails.datastore.mapping.model.MappingContext;
-import org.grails.datastore.mapping.model.PersistentEntity;
-import org.grails.datastore.mapping.model.PersistentProperty;
-import org.grails.datastore.mapping.model.PropertyMapping;
-import org.grails.datastore.mapping.model.types.*;
-import org.grails.datastore.mapping.mongo.MongoSession;
-import org.grails.datastore.mapping.mongo.engine.MongoEntityPersister;
-import org.grails.datastore.mapping.proxy.ProxyFactory;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.util.Assert;
-
-import javax.persistence.CascadeType;
-import javax.persistence.EnumType;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.*;
-
 /**
  * @author <a href='mailto:alexey@zhokhov.com'>Alexey Zhokhov</a>
  */
-public class GridfsEntityPersister extends MongoEntityPersister {
+public class GridfsEntityPersister {
 
+    /*
     public GridfsEntityPersister(MappingContext mappingContext, PersistentEntity entity, MongoSession mongoSession,
                                  ApplicationEventPublisher publisher) {
         super(mappingContext, entity, mongoSession, publisher);
@@ -257,5 +230,6 @@ public class GridfsEntityPersister extends MongoEntityPersister {
         }
         return new PersistentList(associationType, getSession(), (List) associatedObjects);
     }
+    */
 
 }

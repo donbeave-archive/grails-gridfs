@@ -15,11 +15,12 @@
  */
 package grails.plugins.gridfs
 
+import com.mongodb.DB
+import com.mongodb.MongoClient
 import com.mongodb.gridfs.GridFS
 import grails.plugins.Plugin
 import groovy.util.logging.Commons
 import org.grails.datastore.mapping.mongo.MongoDatastore
-import org.springframework.data.mongodb.core.MongoTemplate
 
 import java.util.concurrent.CopyOnWriteArrayList
 
@@ -58,38 +59,42 @@ GridFS plugin for MongoDB.
         { ->
             log.debug 'Overriding MongoDB Datastore bean.'
 
+            /*
             mongoDatastore(GridfsDatastoreFactoryBean) {
                 mongo = ref('mongo')
                 mappingContext = ref('gormMongoMappingContext')
             }
+            */
         }
     }
 
     void doWithDynamicMethods() {
         def ctx = applicationContext
 
-        def datastore = ctx.getBean(MongoDatastore)
-        def service = ctx.getBean(GridfsService)
+        List<Class> gridfsClasses = []
 
-        def list = []
+        MongoDatastore datastore = ctx.getBean(MongoDatastore)
+        GridfsService service = ctx.getBean(GridfsService)
+
+        MongoClient mongoClient = datastore.getMongoClient()
 
         ctx.getBean('gormMongoMappingContext').persistentEntities.each {
-            def collectionName = datastore.getCollectionName(it)
+            String collectionName = datastore.getCollectionName(it)
 
             if (collectionName != null && collectionName.endsWith('.files')) {
                 log.debug "Setting GridFS to ${it.javaClass}."
 
-                MongoTemplate template = datastore.getMongoTemplate(it)
+                String bucket = collectionName.replace('.files', '')
 
-                def bucket = collectionName.replace('.files', '')
+                DB db = new DB(mongoClient, datastore.getDatabaseName(it))
 
-                list.add it.javaClass
+                gridfsClasses.add it.javaClass
 
                 it.javaClass.metaClass.static.getGridfs = {
-                    return new GridFS(template.db, bucket)
+                    return new GridFS(db, bucket)
                 }
                 it.javaClass.metaClass.getGridfs = {
-                    return new GridFS(template.db, bucket)
+                    return new GridFS(db, bucket)
                 }
                 it.javaClass.metaClass.setBytes = { byte[] bytes ->
                     service.setBytes(delegate, bytes)
@@ -112,7 +117,7 @@ GridFS plugin for MongoDB.
             }
         }
 
-        service.gridfsClasses = list as CopyOnWriteArrayList
+        service.gridfsClasses = gridfsClasses as CopyOnWriteArrayList
     }
 
     void onChange(Map<String, Object> event) {
