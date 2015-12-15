@@ -54,13 +54,15 @@ class GridfsController {
 
         def file = Class.forName(fileCommand.className).get(fileCommand.id)
 
-        gridfsService.deliverFile(response, file, null, fileCommand.attachment)
+        gridfsService.deliverFile(file, response, fileCommand.attachment, null)
     }
 
 }
 
 class FileCommand {
+
     String id
     String className
     boolean attachment = true
+
 }

@@ -55,19 +55,6 @@ GridFS plugin for MongoDB.
     def observe = ['services', 'domainClass']
     def loadAfter = ['mongodb']
 
-    Closure doWithSpring() {
-        { ->
-            log.debug 'Overriding MongoDB Datastore bean.'
-
-            /*
-            mongoDatastore(GridfsDatastoreFactoryBean) {
-                mongo = ref('mongo')
-                mappingContext = ref('gormMongoMappingContext')
-            }
-            */
-        }
-    }
-
     void doWithDynamicMethods() {
         def ctx = applicationContext
 
@@ -90,6 +77,7 @@ GridFS plugin for MongoDB.
 
                 gridfsClasses.add it.javaClass
 
+                // new methods
                 it.javaClass.metaClass.static.getGridfs = {
                     return new GridFS(db, bucket)
                 }
@@ -105,14 +93,16 @@ GridFS plugin for MongoDB.
                 it.javaClass.metaClass.setInputStream = { stream ->
                     service.setInputStream(delegate, stream)
                 }
+                it.javaClass.metaClass.getDbFile = {
+                    return service.getDbFile(delegate)
+                }
+
+                // overriding GORM methods
                 it.javaClass.metaClass.save = {
                     return service.save(delegate)
                 }
                 it.javaClass.metaClass.delete = {
                     service.delete(delegate)
-                }
-                it.javaClass.metaClass.getDbFile = {
-                    return service.getDbFile(delegate)
                 }
             }
         }
