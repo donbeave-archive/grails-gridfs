@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-printf "\n> \e[1;37mBuilding grails-cache-redis\e[0m\n"
+printf "\n> \e[1;37mBuilding grails-gridfs\e[0m\n"
 
 set -e
 
