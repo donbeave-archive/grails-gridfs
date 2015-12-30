@@ -1,0 +1,15 @@
+grails:
+    profile: web-plugin
+    doc:
+        title: 'Grails GridFS Plugin'
+        subtitle: 'GridFS support for Grails MongoDB plugin'
+        authors: 'Alexey Zhokhov'
+        copyright: 'Copies of this document may be made for your own use and for distribution to others, provided that you do not charge any fee for such copies and further provided that each copy contains this Copyright Notice, whether distributed in print or electronically.'
+        footer: "Developed by <a href='http://www.zhokhov.com'>Alexey Zhokhov</a>"
+    codegen:
+        defaultPackage: grails.plugins.gridfs
+info:
+    app:
+        name: '@info.app.name@'
+        version: '@info.app.version@'
+        grailsVersion: '@info.app.grailsVersion@'
