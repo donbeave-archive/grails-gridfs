@@ -1,8 +1,8 @@
-# grails-gridfs
+Cache GridFS Plugin
+==================
 
+[![Build Status](https://circleci.com/gh/donbeave/grails-gridfs.svg?style=shield&circle-token=:circle-token)](https://circleci.com/gh/donbeave/grails-gridfs)
 [![Analytics](https://ga-beacon.appspot.com/UA-71075299-1/grails-gridfs/main-page)](https://github.com/igrigorik/ga-beacon)
-
-Grails GridFS plugin
 
 Copyright and license
 ---------------------
