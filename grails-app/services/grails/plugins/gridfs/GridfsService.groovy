@@ -271,7 +271,7 @@ class GridfsService {
 
         response.contentType = dbFile.contentType
         response.contentLength = dbFile.length.toInteger()
-        response.setDateHeader('Last-Modified', dbFile.uploadDate)
+        response.setDateHeader('Last-Modified', dbFile.uploadDate.getTime())
         response.setHeader('ETag', obj.id.toString().encodeAsSHA1())
 
         if (asAttachment)
